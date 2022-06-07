@@ -1,16 +1,45 @@
 const mongoose = require("mongoose");
+const category = require("./FoodCategory");
 const foodsSchema = mongoose.Schema({
-  sales: Boolean,
-  _id: mongoose.Schema.Types.ObjectId,
-  category_id: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
-  name: { type: String, required: [true, "Enter the food name!"] },
-  price: Number,
-  portion: Number,
-  stock: Number,
-  image: String,
-  tumb_img: String,
-  ingredients: String,
-  discount: Number,
-  category: { type: String, ref: "category" },
+  _id: mongoose.Types.ObjectId,
+  name: {
+    type: String,
+    required: [true, "Enter the food name"],
+  },
+  price: {
+    type: Number,
+    required: [true, "Enter the food price"],
+  },
+  portion: {
+    type: Number,
+    required: [true, "Enter the food portion"],
+  },
+  stock: {
+    type: Number,
+    required: [true, "Enter the food stock"],
+  },
+  image: {
+    type: String,
+    required: [true, "Enter the food image"],
+  },
+  tumb_img: {
+    type: String,
+    required: [true, "Enter the food thumbnail"],
+  },
+  ingredients: {
+    type: String,
+    required: [true, "Enter the food ingredients"],
+  },
+  sales: {
+    type: Boolean,
+    required: [true, "Is the food sold or not"],
+  },
+  discount: {
+    type: Number,
+  },
+  category: {
+    type: mongoose.SchemaTypes.Mixed,
+    ref: "category",
+  },
 });
 module.exports = mongoose.model("foods", foodsSchema);

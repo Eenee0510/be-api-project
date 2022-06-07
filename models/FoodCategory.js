@@ -4,6 +4,7 @@ const categorySchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, "Enter the name!"],
+    unique: [true, "The name is already created"],
   },
   color: {
     type: String,
