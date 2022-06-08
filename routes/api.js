@@ -1,77 +1,35 @@
 const express = require("express");
+
 const router = express.Router();
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
-const category = require("../models/FoodCategory");
-const foods = require("../models/Foods");
 const CategoryController = require("../controller/CategoryController");
-const FoodCategory = require("../controller/FoodController");
+const FoodController = require("../controller/FoodController");
+const UserController = require("../controller/UserController");
+const AuthenticationController = require("../controller/AuthenticationController");
 
-router.get("/category", CategoryController.getCategories);
-router.post("/new/cat", CategoryController.createCategory);
-router.put("/update/cat", CategoryController.updateCategory);
-router.delete("/delete/cat", CategoryController.deleteCategory);
+//Categories
+router.get("/category", CategoryController.get_categories);
+router.post("/category", jsonParser, CategoryController.create_categories);
+router.delete("/category/:id", CategoryController.delete_categories);
+router.put("/category", jsonParser, CategoryController.update_categories);
 
-router.get("/foods", FoodCategory.getFoods);
-router.get("/new/food", FoodCategory.createFood);
+//Foods
+router.get("/category/search", CategoryController.find_categories);
+router.get("/foods/search", FoodController.search_foods);
+router.get("/foods", FoodController.get_foods);
+router.get("/foods/:id", FoodController.findById_foods);
+router.post("/foods", jsonParser, FoodController.create_foods);
+router.delete("/foods/:id", FoodController.delete_foods);
+router.put("/foods", jsonParser, FoodController.update_foods);
 
-router.get("/foods/search", (req, res) => {
-  console.log(req.query.name);
-  foods.find({ name: { $regex: `${req.query.name}` } }, function (err, data) {
-    if (err) throw err;
-    res.json(data);
-  });
-});
-
-router.get("/foods/food/:id", (req, res) => {
-  console.log(req.params.id);
-  foods.findById({ _id: `${req.params.id}` }, function (err, data) {
-    if (err) throw err;
-    res.json(data);
-  });
-});
-
-router.post("/category", jsonParser, (req, res) => {
-  const reqBody = req.body;
-  let newcategory = new category({
-    _id: mongoose.Types.ObjectId(),
-    name: reqBody.name,
-    color: reqBody.color,
-  });
-  newcategory
-    .save()
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  res.send("Success");
-});
-
-router.put("/foods", jsonParser, (req, res) => {
-  category.findByIdAndUpdate(
-    req.body.id,
-    {
-      sales: reqBody.sales,
-      _id: mongoose.Types.ObjectId(),
-      category_id: reqBody.category_id,
-      name: reqBody.name,
-      price: reqBody.price,
-      portion: reqBody.portion,
-      stock: reqBody.stock,
-      image: reqBody.image,
-      tumb_img: reqBody.tumb_img,
-      ingredients: reqBody.incredients,
-      dissount: reqBody.discount,
-      category: reqBody.category,
-    },
-    function (err, data) {
-      if (err) throw err;
-      res.send("foods updated");
-    }
-  );
-});
+//Users
+router.get("/users/:name", UserController.find_users);
+router.get("/users", UserController.get_users);
+router.post("/users", jsonParser, UserController.create_users);
+router.delete("/users/:id", UserController.delete_users);
+router.put("/users", jsonParser, UserController.update_users);
+router.post("/user/register", jsonParser, AuthenticationController.register);
+router.post("/user/login", jsonParser, AuthenticationController.login);
 
 module.exports = router;
